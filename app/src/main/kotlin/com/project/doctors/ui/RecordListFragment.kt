@@ -1,10 +1,12 @@
 package com.project.doctors.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.text.bold
+import androidx.core.text.buildSpannedString
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -14,9 +16,14 @@ import coil.transform.CircleCropTransformation
 import com.project.doctors.R
 import com.project.doctors.data.entities.Record
 import com.project.doctors.data.vm.RecordViewModel
+import com.project.doctors.ext.gone
+import com.project.doctors.ext.inflate
+import com.project.doctors.ext.setSpannedText
+import com.project.doctors.ext.show
 import kotlinx.android.synthetic.main.fragment_first.*
 import kotlinx.android.synthetic.main.fragment_first.view.*
 import kotlinx.android.synthetic.main.item_doctor_record.view.*
+import org.jetbrains.anko.toast
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 /**
@@ -29,7 +36,7 @@ class RecordListFragment : Fragment() {
             override fun areContentsTheSame(oldItem: Record, newItem: Record): Boolean =
                 oldItem.firstName == newItem.firstName
                         && oldItem.lastName == newItem.lastName
-                        && oldItem.uri == newItem.uri
+                        && oldItem.imageUri == newItem.imageUri
                         && oldItem.statement == newItem.statement
 
             override fun areItemsTheSame(oldItem: Record, newItem: Record): Boolean =
@@ -51,7 +58,8 @@ class RecordListFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val rootView = inflater.inflate(R.layout.fragment_first, container, false)
-        rootView.recordList.adapter = RecordAdapter()
+        rootView.recordList.adapter =
+            RecordAdapter { context?.toast("View ${it.firstName} profile") }
         return rootView
     }
 
@@ -64,35 +72,42 @@ class RecordListFragment : Fragment() {
 
     private fun getAdapter() = recordList.adapter as RecordAdapter
 
-    private class RecordAdapter :
+    private class RecordAdapter(private val itemClick: (Record) -> Unit) :
         PagedListAdapter<Record, RecordAdapter.ViewHolder>(RECORD_COMPARATOR) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-            ViewHolder(
-                LayoutInflater.from(parent.context).inflate(
-                    R.layout.item_doctor_record,
-                    parent,
-                    false
-                )
-            )
+            ViewHolder(parent.inflate(R.layout.item_doctor_record), itemClick)
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             getItem(position)?.let { holder.bindRecord(it) }
         }
 
-        class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-            fun bindRecord(record: Record) = with(record) {
-                itemView.doctorName.text = "$firstName $lastName"
-                itemView.doctorStatement.text = statement
+        class ViewHolder(v: View, private val itemClick: (Record) -> Unit) :
+            RecyclerView.ViewHolder(v) {
 
-                if (uri.isNullOrEmpty()) itemView.doctorAvatar.setImageResource(R.drawable.img_placeholder)
-                else itemView.doctorAvatar.load(uri) {
+            fun bindRecord(record: Record) = with(record) {
+                itemView.doctorName.text = "${prefix.capitalize()} $firstName $lastName".trim()
+                itemView.doctorType.text = type
+
+                if (statement.isNotEmpty()) {
+                    itemView.doctorStatement.setSpannedText(buildSpannedString {
+                        bold { append(itemView.context.getString(R.string.professional_statement)) }
+                        append("\n")
+                        append(statement)
+                    })
+                    itemView.doctorStatement.show()
+                } else itemView.doctorStatement.gone()
+
+                if (imageUri.isNullOrEmpty()) itemView.doctorAvatar.setImageResource(R.drawable.img_placeholder)
+                else itemView.doctorAvatar.load(imageUri) {
                     crossfade(true)
                     placeholder(R.drawable.img_placeholder)
                     error(R.drawable.img_placeholder)
                     transformations(CircleCropTransformation())
                 }
 
+                itemView.setOnClickListener { itemClick(this) }
+                itemView.btnViewProfile.setOnClickListener { itemClick(this) }
             }
         }
     }

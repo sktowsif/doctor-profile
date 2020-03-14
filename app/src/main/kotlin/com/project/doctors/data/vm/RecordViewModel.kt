@@ -21,6 +21,8 @@ class RecordViewModel(
     init {
         val config = PagedList.Config.Builder()
             .setPageSize(30)
+            .setInitialLoadSizeHint(50)
+            .setEnablePlaceholders(true)
             .build()
         recordLiveData = initializePageListBuilder(config).build()
     }

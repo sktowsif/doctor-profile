@@ -34,12 +34,14 @@ data class DataEntity(
 data class RecordEntity(
     @field:SerializedName("id")
     val id: Long,
+    @field:SerializedName("prefix")
+    val prefix: String?,
     @field:SerializedName("first_name")
     val firstName: String?,
     @field:SerializedName("last_name")
     val lastName: String?,
-    @field:SerializedName("uri")
-    val uri: String?,
+    @field:SerializedName("type")
+    val type: String?,
     @field:SerializedName("professional_statement")
     val statement: String?,
     @field:SerializedName("links")
@@ -48,7 +50,7 @@ data class RecordEntity(
 
 data class LinkEntity(
     @field:SerializedName("rel")
-    val reference: String,
+    val rel: String,
     @field:SerializedName("href")
     val url: String?
 )
@@ -56,8 +58,10 @@ data class LinkEntity(
 
 data class Record(
     val id: Long,
+    val prefix: String,
     val firstName: String,
     val lastName: String,
-    val uri: String?,
+    val type: String,
+    val imageUri: String?,
     val statement: String
 )

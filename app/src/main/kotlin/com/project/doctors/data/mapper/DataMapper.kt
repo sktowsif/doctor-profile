@@ -32,14 +32,16 @@ class RecordMapper :
             id = input.id,
             firstName = input.firstName ?: "",
             lastName = input.lastName ?: "",
-            uri = findProfilePhoto(input.links),
+            prefix = input.prefix ?: "",
+            type = input.type ?: "",
+            imageUri = findProfilePhoto(input.links),
             statement = input.statement ?: ""
         )
     }
 
     private fun findProfilePhoto(links: List<LinkEntity>?): String? {
         return if (links.isNullOrEmpty()) null
-        else links.map { it.reference to it.url }.toMap()[PROFILE_PHOTO]
+        else links.map { it.rel to it.url }.toMap()[PROFILE_PHOTO]
     }
 
 }

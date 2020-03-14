@@ -7,7 +7,10 @@
     android:layout_marginLeft="@dimen/_13sdp"
     android:layout_marginTop="@dimen/_5sdp"
     android:layout_marginRight="@dimen/_13sdp"
-    android:layout_marginBottom="@dimen/_5sdp">
+    android:layout_marginBottom="@dimen/_5sdp"
+    android:foreground="?selectableItemBackground"
+    app:cardBackgroundColor="#fafafa"
+    app:cardCornerRadius="@dimen/_5sdp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,8 +19,8 @@
 
         <ImageView
             android:id="@+id/doctorAvatar"
-            android:layout_width="@dimen/_40sdp"
-            android:layout_height="@dimen/_40sdp"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
             android:contentDescription="@null"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -28,9 +31,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_8sdp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintLeft_toRightOf="@id/doctorAvatar"
             app:layout_constraintTop_toTopOf="parent"
+            tools:text="@tools:sample/full_names" />
+
+        <TextView
+            android:id="@+id/doctorType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            app:layout_constraintLeft_toRightOf="@id/doctorAvatar"
+            app:layout_constraintTop_toBottomOf="@id/doctorName"
             tools:text="@tools:sample/full_names" />
 
         <TextView
@@ -42,6 +55,17 @@
             app:layout_constraintTop_toBottomOf="@id/doctorAvatar"
             tools:maxLines="2"
             tools:text="@tools:sample/lorem/random" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnViewProfile"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:text="@string/view_profile"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/doctorStatement" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
